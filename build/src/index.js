@@ -1,0 +1,30 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const cors_1 = __importDefault(require("cors"));
+const http_1 = __importDefault(require("http"));
+const mongoose_1 = __importDefault(require("mongoose"));
+const index_1 = __importDefault(require("./config/index"));
+const authRoutes_1 = __importDefault(require("./routes/authRoutes"));
+const attendanceRoutes_1 = __importDefault(require("./routes/attendanceRoutes"));
+// import documentRoutes from './routes/document.routes';
+const taskRoutes_1 = __importDefault(require("./routes/taskRoutes"));
+const app = (0, express_1.default)();
+app.use((0, cors_1.default)());
+app.use(express_1.default.json());
+app.use('/uploads', express_1.default.static('uploads'));
+app.use('/auth', authRoutes_1.default);
+app.use('/attendance', attendanceRoutes_1.default);
+app.use('/tasks', taskRoutes_1.default);
+// app.use('/documents', documentRoutes);
+mongoose_1.default.connect(index_1.default.mongoUri).then(() => {
+    console.log('Mongo connected');
+    const server = http_1.default.createServer(app);
+    //   initSockets(server);
+    //   scheduleJobs();
+    server.listen(index_1.default.port, () => console.log('Server listening on', index_1.default.port));
+}).catch(err => console.error(err));
+exports.default = app;
